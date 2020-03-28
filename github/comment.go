@@ -4,29 +4,15 @@ import (
 	"context"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/google/go-github/v30/github"
-	"github.com/razzkumar/PR-Automation/logger"
+	"github.com/razzkumar/PR-Automation/utils"
 	"golang.org/x/oauth2"
 )
 
-func Comment(url string) {
-
-	repo := os.Getenv("GH_REPO")
-
-	if repo == "" {
-
-		logger.FailOnNoFlag("Unbale to load repo name ")
-	}
-	owner := os.Getenv("REPO_USER")
+func Comment(url string, repo utils.GithubInfo) {
 
 	comment := "Visit: " + url
-
-	num, err := strconv.Atoi(os.Getenv("PR_NUMBER"))
-	if err != nil {
-		logger.FailOnError(err, "Error While Parsing PR number")
-	}
 
 	ctx := context.Background()
 
@@ -41,7 +27,7 @@ func Comment(url string) {
 	pullRequestReviewRequest := &github.PullRequestReviewRequest{Body: &comment, Event: github.String("COMMENT")}
 
 	//client.PullRequests.CreateComment(ctx, owner, repo, num, pullRequestReviewRequest)
-	pullRequestReview, _, err := client.PullRequests.CreateReview(ctx, owner, repo, num, pullRequestReviewRequest)
+	pullRequestReview, _, err := client.PullRequests.CreateReview(ctx, repo.RepoOwner, repo.RepoName, repo.PrNumber, pullRequestReviewRequest)
 
 	if err != nil {
 		log.Fatal(err)
