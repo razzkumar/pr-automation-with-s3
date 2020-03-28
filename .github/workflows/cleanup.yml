@@ -8,9 +8,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy to s3 and commit to pr
-      id: deploy-to-s3-and-coment
-      uses: ./
+    - name: S3 static site deploy
+      uses: razzkumar/PR-Automation@v0.2.0
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN}}
       env:
