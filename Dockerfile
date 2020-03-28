@@ -31,7 +31,6 @@ LABEL "com.github.actions.description"="Deploy each PR to s3 bucket by create \
 LABEL "com.github.actions.icon"="upload-cloud"
 LABEL "com.github.actions.color"="green"
 
-WORKDIR /app
 COPY --from=builder /build/prcomment /
 #COPY ./make-env.sh .
 COPY ./entrypoint.sh /
