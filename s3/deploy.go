@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/razzkumar/PR-Automation/github"
 	"github.com/razzkumar/PR-Automation/logger"
 	"github.com/razzkumar/PR-Automation/utils"
 )
@@ -75,5 +76,6 @@ func Deploy(bucket string, sess *session.Session) error {
 	region := os.Getenv("AWS_REGION")
 	url := "http://" + bucket + ".s3-website." + region + ".amazonaws.com/"
 	fmt.Println("Url", url)
+	gh.Comment(url)
 	return nil
 }

@@ -3,23 +3,34 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/razzkumar/PR-Automation/logger"
 	"github.com/razzkumar/PR-Automation/s3"
 )
 
 func main() {
-	var action, bucket string
+	var action string
 
 	flag.StringVar(&action, "action", "create", "It's create or delete s3 bucket")
-	flag.StringVar(&bucket, "bucket", "", "Name of the s3 bucket to create")
 
 	flag.Parse()
 
-	if bucket == "" {
-		logger.FailOnNoFlag("s3 bucket name required")
+	prBranch := os.Getenv("PR_BRANCH")
+
+	if prBranch == "" {
+		logger.FailOnNoFlag("PR_BRANCH not set")
 	}
 
+	prNum := os.Getenv("PR_NUMBER")
+
+	if prNum == "" {
+		logger.FailOnNoFlag("PR_NUMBER not set")
+	}
+
+	bucket := strings.ToLower(prBranch + ".PR" + prNum + ".autoDeploy")
+	fmt.Println("bucket", bucket)
 	// Getting session of aws
 
 	sess := s3.GetSession()

@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+
 func FailOnNoFlag(msg string) {
 	panic(fmt.Sprintf("%s", msg))
 }
