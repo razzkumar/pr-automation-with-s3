@@ -17,7 +17,7 @@ import (
 )
 
 // Deploy to S3 bucket
-func Deploy(bucket string, sess *session.Session) error {
+func Deploy(bucket string, repo utils.GithubInfo, sess *session.Session) error {
 	assestFolder := os.Getenv("BUILD_FOLDER")
 
 	dir := "./" + assestFolder
@@ -76,6 +76,6 @@ func Deploy(bucket string, sess *session.Session) error {
 	region := os.Getenv("AWS_REGION")
 	url := "http://" + bucket + ".s3-website." + region + ".amazonaws.com/"
 	fmt.Println("Url", url)
-	gh.Comment(url)
+	gh.Comment(url, repo)
 	return nil
 }
