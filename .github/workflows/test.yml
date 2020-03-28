@@ -18,10 +18,11 @@ jobs:
       id: deploy-to-s3-and-coment
       uses: ./
       with:
-        args: ${{ secrets.GITHUB_TOKEN}}
+        repo-token: ${{ secrets.GITHUB_TOKEN}}
       env:
         AWS_S3_BUCKET: "fsdafoisjdafoijsado f"
         AWS_ACCESS_KEY_ID: "cool"
         AWS_SECRET_ACCESS_KEY: "dsafsajdofa"
-        SOURCE_DIR: 'public'      # optional: defaults to entire repository
-
+        BUILD_FOLDER: 'public'      # optional: defaults to entire repository
+    - name: Print Hello wold
+      run: echo "Hello bro"
