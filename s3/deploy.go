@@ -15,18 +15,15 @@ import (
 	"github.com/razzkumar/PR-Automation/utils"
 )
 
-// Data contains the data needed to deploy to S3 bucket
-type Data struct {
-	BucketName string
-	DistDir    string
-}
-
 // Deploy to S3 bucket
-func Deploy(data Data, sess *session.Session) error {
+func Deploy(bucket string, sess *session.Session) error {
+	assestFolder := os.Getenv("BUILD_FOLDER")
+
+	dir := "./" + assestFolder
 
 	svc := s3.New(sess)
 
-	err := CreateBucket(data.BucketName, svc)
+	err := CreateBucket(bucket, svc)
 
 	if err != nil {
 		logger.Info(err.Error())
@@ -36,7 +33,7 @@ func Deploy(data Data, sess *session.Session) error {
 
 	fileList := []string{}
 
-	filepath.Walk(data.DistDir,
+	filepath.Walk(dir,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -55,12 +52,12 @@ func Deploy(data Data, sess *session.Session) error {
 	for _, file := range fileList {
 		f, _ := os.Open(file)
 
-		key := strings.TrimPrefix(file, data.DistDir)
-		key = strings.Replace(key, data.DistDir, "", -1)
+		key := strings.TrimPrefix(file, dir)
+		key = strings.Replace(key, assestFolder, "", -1)
 		fileContentType := utils.GetFileType(file)
 
 		_, err := uploader.Upload(&s3manager.UploadInput{
-			Bucket:      aws.String(data.BucketName),
+			Bucket:      aws.String(bucket),
 			Key:         aws.String(key),
 			ContentType: aws.String(fileContentType),
 			Body:        f,
@@ -74,6 +71,9 @@ func Deploy(data Data, sess *session.Session) error {
 
 	fmt.Println("\n\n" + strconv.Itoa(len(fileList)) + " Files Uploaded Successfully. 🎉 🎉 🎉")
 	fmt.Println("removeing filse")
-	os.RemoveAll(data.DistDir)
+	os.RemoveAll(dir)
+	region := os.Getenv("AWS_REGION")
+	url := "http://" + bucket + ".s3-website." + region + ".amazonaws.com/"
+	fmt.Println("Url", url)
 	return nil
 }

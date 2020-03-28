@@ -24,17 +24,12 @@ func main() {
 
 	sess := s3.GetSession()
 
-	data := s3.Data{
-		DistDir:    "./build",
-		BucketName: bucket,
-	}
-
 	switch action {
 	case "create":
-		err := s3.Deploy(data, sess)
+		err := s3.Deploy(bucket, sess)
 		logger.FailOnError(err, "Error on Deployment")
 	case "delete":
-		err := s3.Delete(data.BucketName, sess)
+		err := s3.Delete(bucket, sess)
 		logger.FailOnError(err, "Error while Delete")
 	default:
 		err := fmt.Errorf("Nothing to do")

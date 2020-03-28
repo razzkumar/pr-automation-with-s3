@@ -22,7 +22,7 @@ func Delete(bucket string, sess *session.Session) error {
 		return err
 	}
 
-	fmt.Printf("Deleted object(s) from bucket: %s", bucket)
+	fmt.Printf("\nDeleted object(s) from bucket: %s\n", bucket)
 
 	_, err := svc.DeleteBucket(&s3.DeleteBucketInput{
 		Bucket: aws.String(bucket),
@@ -31,7 +31,7 @@ func Delete(bucket string, sess *session.Session) error {
 		return err
 	}
 
-	fmt.Printf("%s s3 Bucket Deleted", bucket)
+	fmt.Printf("\n%s s3 Bucket Deleted\n", bucket)
 
 	return nil
 }
