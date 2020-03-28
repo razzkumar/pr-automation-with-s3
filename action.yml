@@ -3,7 +3,7 @@ description: "It simple Build the aws S3 bucket for static site,deploy to the st
 author: razzkumar
 runs:
   using: docker
-  image: Dockerfile
+  image: razzkumar/pr-automation
 branding:
   icon: upload-cloud
   color: green
