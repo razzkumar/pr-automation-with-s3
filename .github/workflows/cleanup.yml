@@ -1,0 +1,19 @@
+name: Delete S3 bucket
+
+on:
+  delete
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: S3 static site deploy
+      uses: razzkumar/PR-Automation@v0.2.0
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN}}
+      env:
+        AWS_ACCESS_KEY_ID: "<---AWS_ACCESS_KEY_ID----->"
+        AWS_SECRET_ACCESS_KEY: "<----AWS_SECRET_ACCESS_KEY----->"
+        BUILD_FOLDER: 'public'      # optional: defaults to entire repository
+    - name: Print Hello wold
+      run: echo "Hello bro"
