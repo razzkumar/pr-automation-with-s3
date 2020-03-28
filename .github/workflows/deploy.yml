@@ -1,10 +1,10 @@
-name: Learn By Test
+name: Create s3 bucket and deploy static site
 
 on:
   pull_request:
     branches:
       - master
-    types: [opened,closed]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,9 +16,8 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN}}
       env:
-        AWS_S3_BUCKET: "fsdafoisjdafoijsado f"
-        AWS_ACCESS_KEY_ID: "cool"
-        AWS_SECRET_ACCESS_KEY: "dsafsajdofa"
+        AWS_ACCESS_KEY_ID: "<-----AWS_ACCESS_KEY_ID-------->"
+        AWS_SECRET_ACCESS_KEY: "<------AWS_SECRET_ACCESS_KEY----->"
         BUILD_FOLDER: 'public'      # optional: defaults to entire repository
     - name: Print Hello wold
       run: echo "Hello bro"

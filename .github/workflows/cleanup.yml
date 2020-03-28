@@ -1,0 +1,21 @@
+
+name: Delete S3 bucket
+
+on:
+  delete
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to s3 and commit to pr
+      id: deploy-to-s3-and-coment
+      uses: ./
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN}}
+      env:
+        AWS_ACCESS_KEY_ID: "<---AWS_ACCESS_KEY_ID----->"
+        AWS_SECRET_ACCESS_KEY: "<----AWS_SECRET_ACCESS_KEY----->"
+        BUILD_FOLDER: 'public'      # optional: defaults to entire repository
+    - name: Print Hello wold
+      run: echo "Hello bro"

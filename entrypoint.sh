@@ -23,9 +23,10 @@ if [ -z "$AWS_REGION" ]; then
 fi
 
 #listing all available eviroment variables
-env
 
-# Running prcomment command to commit
-#/prcomment
+if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]];then
+  # Running prcomment command to commit
+  /prcomment
+fi
 
 
