@@ -90,16 +90,12 @@ func build() {
 
 	buildCmd := os.Getenv("BUILD_COMMAND")
 
-	if buildCmd == "" {
-		logger.FailOnNoFlag("Unable to Load BUILD_COMMAND")
-	}
-
 	if strings.Contains(buildCmd, "npm") {
 
 		fmt.Println("npm install ....")
 		utils.RunCommand("npm install")
 
-		fmt.Println("-----------build-----------")
+		fmt.Printf("------------ %s ----------", buildCmd)
 		utils.RunCommand(buildCmd)
 
 	} else {
@@ -107,8 +103,8 @@ func build() {
 		fmt.Println("yarn install ....")
 		utils.RunCommand("yarn")
 
-		fmt.Println("-----------build-----------")
-		utils.RunCommand(buildCmd)
+		fmt.Printf("----------- %s -----------", buildCmd)
 
+		utils.RunCommand(buildCmd)
 	}
 }

@@ -1,3 +1,4 @@
 .env
 make-env.sh
 Dockertest
+data.json

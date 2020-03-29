@@ -33,46 +33,19 @@ func getDistFolder() string {
 
 func GetPRInfo(repo ProjectInfo) ProjectInfo {
 
-	//repo := ProjectInfo{}
+	prEvent := GetPREvent()
+	repo.Branch = prEvent.PullRequest.Head.GetRef()
 
-	prBranch := os.Getenv("GITHUB_HEAD_REF")
-	repo.Branch = prBranch
+	repo.PrNumber = prEvent.GetNumber()
 
-	// It's on the form of "refs/pull/1/merge"
-	_ghref := os.Getenv("GITHUB_REF")
+	prNumInit := strconv.Itoa(repo.PrNumber)
 
-	if _ghref != "" {
+	bucket := strings.ToLower(repo.Branch + ".PR" + prNumInit + ".auto-deploy")
 
-		ghref := strings.Split(_ghref, "/")
-		prNum, err := strconv.Atoi(ghref[2])
+	repo.Bucket = bucket
 
-		if err != nil {
-			logger.FailOnError(err, "Error While Parsing PR number")
-		}
-
-		repo.PrNumber = prNum
-
-		prNumInit := strconv.Itoa(prNum)
-
-		bucket := strings.ToLower(repo.Branch + ".PR" + prNumInit + ".auto-deploy")
-
-		repo.Bucket = bucket
-
-		//logger.FailOnNoFlag("Unable to load GITHUB_REF")
-	}
-
-	// It's on the form of "razzkumar/ftodo"
-
-	_ghRepo := os.Getenv("GITHUB_REPOSITORY")
-
-	if _ghRepo != "" {
-		ghRepo := strings.Split(_ghRepo, "/")
-
-		repo.RepoOwner = ghRepo[0]
-		repo.RepoName = ghRepo[1]
-
-		//logger.FailOnNoFlag("Unable to parse GITHUB_REPOSITORY")
-	}
+	repo.RepoOwner = prEvent.Repo.Owner.GetLogin()
+	repo.RepoName = prEvent.Repo.GetName()
 
 	repo.DistFolder = getDistFolder()
 
