@@ -16,14 +16,14 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o s3 .
+RUN go build -o /s3 .
 
 ## copy only build file
 FROM node:12-alpine
 
 LABEL maintainer="razzkumar <razzkumar.dev@gmail.com>"
-LABEL version="0.1.0"
-LABEL repository="https://github.com/razzkumar/PR-Automation"
+LABEL version="0.4.0"
+LABEL repository="https://github.com/razzkumar/pr-automation-s3-utils"
 
 LABEL "com.github.actions.name"="PR Automation"
 LABEL "com.github.actions.description"="Deploy each PR to s3 bucket by create \
@@ -31,7 +31,7 @@ LABEL "com.github.actions.description"="Deploy each PR to s3 bucket by create \
 LABEL "com.github.actions.icon"="upload-cloud"
 LABEL "com.github.actions.color"="green"
 
-COPY --from=builder /build/s3 /
+COPY --from=builder /s3 /
 COPY ./entrypoint.sh /
 
 # Command to run when starting the container

@@ -11,6 +11,17 @@ import (
 )
 
 func main() {
+
+	// Setting env variable
+	awsRegion := os.Getenv("AWS_REGION")
+
+	if awsRegion == "" {
+		err := os.Setenv("AWS_REGION", "us-east-2")
+		if err != nil {
+			logger.FailOnError(err, "Fail to set AWS_REGION")
+		}
+	}
+
 	var action string
 	var repo utils.ProjectInfo
 	// Getting action wether delete or create
@@ -24,7 +35,7 @@ func main() {
 	if os.Getenv("GITHUB_EVENT_NAME") == "pull_request" && (action == "create" || action == "delete") {
 		repo = utils.GetPRInfo(repo)
 	} else {
-		repo = utils.GetInfo(repo)
+		repo = utils.GetInfo(repo, action)
 	}
 
 	// Getting session of aws

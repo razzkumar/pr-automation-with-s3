@@ -21,9 +21,9 @@ type ProjectInfo struct {
 func getDistFolder() string {
 
 	assestFolder := os.Getenv("BUILD_FOLDER")
-
+	//setting build folder default
 	if assestFolder == "" {
-		logger.FailOnNoFlag("Unable to parse BUILD_FOLDER / source folder")
+		assestFolder = "build"
 	}
 
 	distDir := strings.Replace(assestFolder, "./", "", -1)
@@ -78,25 +78,28 @@ func GetPRInfo(repo ProjectInfo) ProjectInfo {
 
 	isBuild := os.Getenv("IS_BUILD")
 
-	if isBuild == "true" {
+	if isBuild == "" || isBuild == "true" {
 		repo.IsBuild = true
 	}
 
 	return repo
 }
 
-func GetInfo(repo ProjectInfo) ProjectInfo {
+func GetInfo(repo ProjectInfo, action string) ProjectInfo {
 
 	// setting bucket
-	bucket := os.Getenv("AWS_BUCKET")
-	repo.Bucket = bucket
+	bucket := os.Getenv("AWS_S3_BUCKET")
+	if action == "deploy" && bucket == "" {
+		logger.FailOnNoFlag("AWS_S3_BUCKET is not set:")
+	}
+	repo.Bucket = strings.ToLower(bucket + ".auto-deploy")
 
 	// setting dist folder
 	repo.DistFolder = getDistFolder()
 
 	isBuild := os.Getenv("IS_BUILD")
 
-	if isBuild == "true" {
+	if isBuild == "" || isBuild == "true" {
 		repo.IsBuild = true
 	}
 
