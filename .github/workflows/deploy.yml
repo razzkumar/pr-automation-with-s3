@@ -11,13 +11,13 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Deploy to s3 and commit to pr
-      id: deploy-to-s3-and-coment
-      uses: ./
+      uses: razzkumar/PR-Automation@v0.3.0
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN}}
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
       env:
-        AWS_ACCESS_KEY_ID: "<-----AWS_ACCESS_KEY_ID-------->"
-        AWS_SECRET_ACCESS_KEY: "<------AWS_SECRET_ACCESS_KEY----->"
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
         BUILD_FOLDER: 'public'      # optional: defaults to entire repository
+        GH_ACCSS_TOKEN: ${{ secrets.GH_ACCSS_TOKEN }}
     - name: Print Hello wold
       run: echo "Hello bro"

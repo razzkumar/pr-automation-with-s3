@@ -8,52 +8,97 @@ import (
 	"github.com/razzkumar/PR-Automation/logger"
 )
 
-type GithubInfo struct {
-	PrNumber  int
-	RepoOwner string
-	Branch    string
-	RepoName  string
+type ProjectInfo struct {
+	PrNumber   int
+	RepoOwner  string
+	Branch     string
+	RepoName   string
+	DistFolder string
+	Bucket     string
+	IsBuild    bool
 }
 
-func GetPRInfo() GithubInfo {
+func getDistFolder() string {
 
-	repo := GithubInfo{}
+	assestFolder := os.Getenv("BUILD_FOLDER")
+
+	if assestFolder == "" {
+		logger.FailOnNoFlag("Unable to parse BUILD_FOLDER / source folder")
+	}
+
+	distDir := strings.Replace(assestFolder, "./", "", -1)
+
+	return distDir
+}
+
+func GetPRInfo(repo ProjectInfo) ProjectInfo {
+
+	//repo := ProjectInfo{}
+
+	prBranch := os.Getenv("GITHUB_HEAD_REF")
+	repo.Branch = prBranch
 
 	// It's on the form of "refs/pull/1/merge"
 	_ghref := os.Getenv("GITHUB_REF")
 
-	if _ghref == "" {
-		logger.FailOnNoFlag("Unable to load GITHUB_REF")
+	if _ghref != "" {
+
+		ghref := strings.Split(_ghref, "/")
+		prNum, err := strconv.Atoi(ghref[2])
+
+		if err != nil {
+			logger.FailOnError(err, "Error While Parsing PR number")
+		}
+
+		repo.PrNumber = prNum
+
+		prNumInit := strconv.Itoa(prNum)
+
+		bucket := strings.ToLower(repo.Branch + ".PR" + prNumInit + ".auto-deploy")
+
+		repo.Bucket = bucket
+
+		//logger.FailOnNoFlag("Unable to load GITHUB_REF")
 	}
-
-	ghref := strings.Split(_ghref, "/")
-	prNum, err := strconv.Atoi(ghref[2])
-
-	if err != nil {
-		logger.FailOnError(err, "Error While Parsing PR number")
-	}
-
-	repo.PrNumber = prNum
-
-	prBranch := os.Getenv("GITHUB_HEAD_REF")
-
-	if prBranch == "" {
-		logger.FailOnNoFlag("PR_BRANCH not set")
-	}
-	repo.Branch = prBranch
 
 	// It's on the form of "razzkumar/ftodo"
 
 	_ghRepo := os.Getenv("GITHUB_REPOSITORY")
 
-	if _ghRepo == "" {
-		logger.FailOnNoFlag("Unable to parse GITHUB_REPOSITORY")
+	if _ghRepo != "" {
+		ghRepo := strings.Split(_ghRepo, "/")
+
+		repo.RepoOwner = ghRepo[0]
+		repo.RepoName = ghRepo[1]
+
+		//logger.FailOnNoFlag("Unable to parse GITHUB_REPOSITORY")
 	}
 
-	ghRepo := strings.Split(_ghRepo, "/")
+	repo.DistFolder = getDistFolder()
 
-	repo.RepoOwner = ghRepo[0]
-	repo.RepoName = ghRepo[1]
+	isBuild := os.Getenv("IS_BUILD")
+
+	if isBuild == "true" {
+		repo.IsBuild = true
+	}
+
+	return repo
+}
+
+func GetInfo(repo ProjectInfo) ProjectInfo {
+
+	// setting bucket
+	bucket := os.Getenv("AWS_BUCKET")
+	repo.Bucket = bucket
+
+	// setting dist folder
+	repo.DistFolder = getDistFolder()
+
+	isBuild := os.Getenv("IS_BUILD")
+
+	if isBuild == "true" {
+		repo.IsBuild = true
+	}
 
 	return repo
 }

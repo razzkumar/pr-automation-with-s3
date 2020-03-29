@@ -11,23 +11,28 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"github.com/razzkumar/PR-Automation/github"
 	"github.com/razzkumar/PR-Automation/logger"
 	"github.com/razzkumar/PR-Automation/utils"
 )
 
 // Deploy to S3 bucket
-func Deploy(bucket string, repo utils.GithubInfo, sess *session.Session) error {
-	assestFolder := os.Getenv("BUILD_FOLDER")
+func Deploy(repo utils.ProjectInfo, sess *session.Session) error {
 
-	dir := "./" + assestFolder
+	dir := "./" + repo.DistFolder
 
 	svc := s3.New(sess)
 
-	err := CreateBucket(bucket, svc)
+	err := CreateBucket(repo.Bucket, svc)
 
 	if err != nil {
-		logger.Info(err.Error())
+		logger.FailOnError(err, "Error while creating S3 bucket")
+	}
+
+	if repo.IsBuild {
+
+		//Running build
+		build()
+
 	}
 
 	uploader := s3manager.NewUploader(sess)
@@ -54,11 +59,11 @@ func Deploy(bucket string, repo utils.GithubInfo, sess *session.Session) error {
 		f, _ := os.Open(file)
 
 		key := strings.TrimPrefix(file, dir)
-		key = strings.Replace(key, assestFolder, "", -1)
+		key = strings.Replace(key, repo.DistFolder, "", -1)
 		fileContentType := utils.GetFileType(file)
 
 		_, err := uploader.Upload(&s3manager.UploadInput{
-			Bucket:      aws.String(bucket),
+			Bucket:      aws.String(repo.Bucket),
 			Key:         aws.String(key),
 			ContentType: aws.String(fileContentType),
 			Body:        f,
@@ -71,11 +76,39 @@ func Deploy(bucket string, repo utils.GithubInfo, sess *session.Session) error {
 	}
 
 	fmt.Println("\n\n" + strconv.Itoa(len(fileList)) + " Files Uploaded Successfully. 🎉 🎉 🎉")
-	fmt.Println("removeing filse")
+
+	url := utils.GetURL(repo.Bucket)
+	fmt.Println("URL : ", url)
+
+	fmt.Println("removing dist files")
 	os.RemoveAll(dir)
-	region := os.Getenv("AWS_REGION")
-	url := "http://" + bucket + ".s3-website." + region + ".amazonaws.com/"
-	fmt.Println("Url", url)
-	gh.Comment(url, repo)
+
 	return nil
+}
+
+func build() {
+
+	buildCmd := os.Getenv("BUILD_COMMAND")
+
+	if buildCmd == "" {
+		logger.FailOnNoFlag("Unable to Load BUILD_COMMAND")
+	}
+
+	if strings.Contains(buildCmd, "npm") {
+
+		fmt.Println("npm install ....")
+		utils.RunCommand("npm install")
+
+		fmt.Println("-----------build-----------")
+		utils.RunCommand(buildCmd)
+
+	} else {
+
+		fmt.Println("yarn install ....")
+		utils.RunCommand("yarn")
+
+		fmt.Println("-----------build-----------")
+		utils.RunCommand(buildCmd)
+
+	}
 }

@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"strconv"
-	"strings"
+	"os"
 
 	"github.com/razzkumar/PR-Automation/logger"
 	"github.com/razzkumar/PR-Automation/s3"
@@ -13,28 +12,33 @@ import (
 
 func main() {
 	var action string
-
+	var repo utils.ProjectInfo
 	// Getting action wether delete or create
-	flag.StringVar(&action, "action", "create", "It's create or delete s3 bucket")
+	flag.StringVar(&action, "action", "", "It's create or delete s3 bucket")
 	flag.Parse()
 
-	repo := utils.GetPRInfo()
-	fmt.Println((repo))
-	fmt.Println(repo.PrNumber)
-	prNum := strconv.Itoa(repo.PrNumber)
-	fmt.Printf("%v : %T", prNum, prNum)
-	bucket := strings.ToLower(repo.Branch + ".PR" + prNum + ".auto-deploy")
-	fmt.Println("bucket", bucket)
-	//// Getting session of aws
+	if action == "" {
+		logger.FailOnNoFlag("Please provide action what to do [deploy,delete,create]")
+	}
 
+	if os.Getenv("GITHUB_EVENT_NAME") == "pull_request" && (action == "create" || action == "delete") {
+		repo = utils.GetPRInfo(repo)
+	} else {
+		repo = utils.GetInfo(repo)
+	}
+
+	// Getting session of aws
 	sess := s3.GetSession()
 
 	switch action {
-	case "create":
-		err := s3.Deploy(bucket, repo, sess)
+	case "deploy":
+		err := s3.Deploy(repo, sess)
 		logger.FailOnError(err, "Error on Deployment")
+	case "create":
+		err := s3.DeployAndComment(repo, sess)
+		logger.FailOnError(err, "Error on Deployment and commit")
 	case "delete":
-		err := s3.Delete(bucket, sess)
+		err := s3.Delete(repo.Bucket, sess)
 		logger.FailOnError(err, "Error while Delete")
 	default:
 		err := fmt.Errorf("Nothing to do")

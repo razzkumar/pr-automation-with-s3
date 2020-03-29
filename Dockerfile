@@ -16,10 +16,10 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o prcomment .
+RUN go build -o s3 .
 
 ## copy only build file
-FROM alpine
+FROM node:12-alpine
 
 LABEL maintainer="razzkumar <razzkumar.dev@gmail.com>"
 LABEL version="0.1.0"
@@ -27,12 +27,11 @@ LABEL repository="https://github.com/razzkumar/PR-Automation"
 
 LABEL "com.github.actions.name"="PR Automation"
 LABEL "com.github.actions.description"="Deploy each PR to s3 bucket by create \
-        new s3 bucket and comment url to the PR"
+        new s3 bucket and comment url to the PR and delete s3 after merge"
 LABEL "com.github.actions.icon"="upload-cloud"
 LABEL "com.github.actions.color"="green"
 
-COPY --from=builder /build/prcomment /
-#COPY ./make-env.sh .
+COPY --from=builder /build/s3 /
 COPY ./entrypoint.sh /
 # Command to run when starting the container
 CMD ["/entrypoint.sh"]

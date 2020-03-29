@@ -10,11 +10,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func Comment(url string, repo utils.GithubInfo) {
-
-	comment := "Visit: " + url
-
-	ctx := context.Background()
+func GithubClient(ctx context.Context) *github.Client {
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv("GH_ACCSS_TOKEN")},
@@ -24,14 +20,27 @@ func Comment(url string, repo utils.GithubInfo) {
 
 	client := github.NewClient(tc)
 
+	return client
+}
+
+func Comment(url string, repo utils.ProjectInfo) error {
+
+	comment := "Visit: " + url
+
+	ctx := context.Background()
+
+	client := GithubClient(ctx)
+
 	pullRequestReviewRequest := &github.PullRequestReviewRequest{Body: &comment, Event: github.String("COMMENT")}
 
 	//client.PullRequests.CreateComment(ctx, owner, repo, num, pullRequestReviewRequest)
 	pullRequestReview, _, err := client.PullRequests.CreateReview(ctx, repo.RepoOwner, repo.RepoName, repo.PrNumber, pullRequestReviewRequest)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	log.Println("github-Commit: Created GitHub PR Review comment", pullRequestReview.ID)
+
+	return nil
 }
