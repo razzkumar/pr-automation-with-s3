@@ -1,9 +1,9 @@
-name: "S3 static site deploy"
+name: "Static site deploy to s3 and comment on PR"
 description: "It simple Build the aws S3 bucket for static site,deploy to the static site and comment the url to the PR"
 author: razzkumar
 runs:
   using: docker
-  image: razzkumar/pr-automation:v0.3.0
+  image: docker://razzkumar/pr-automation:v0.4.0
 branding:
   icon: upload-cloud
   color: green

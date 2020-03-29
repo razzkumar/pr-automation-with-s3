@@ -1,0 +1,17 @@
+name: Create s3 bucket and deploy static site
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Github repo
+      uses: actions/checkout@master
+    - name: Checking what is happining
+      id: pr-automation-with-s3
+      uses: ./
+    - name: Print hello
+      run: echo Hello
