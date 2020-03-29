@@ -33,5 +33,6 @@ LABEL "com.github.actions.color"="green"
 
 COPY --from=builder /build/s3 /
 COPY ./entrypoint.sh /
+
 # Command to run when starting the container
 CMD ["/entrypoint.sh"]
