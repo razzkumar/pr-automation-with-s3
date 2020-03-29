@@ -1,5 +1,5 @@
-name: "Static site deploy to s3 and comment on PR"
-description: "It simple Build the aws S3 bucket for static site,deploy to the static site and comment the url to the PR"
+name: "Create bucket and deploy static site to s3 and comment on PR"
+description: "It simple Build the aws S3 bucket, build the applicaton and deploy static site to s3 and comment the url to the PR"
 author: razzkumar
 runs:
   using: docker
