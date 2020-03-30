@@ -42,7 +42,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Static site deploy to s3 and comment on PR
-      uses: razzkumar/pr-automation-with-s3@v0.4.0
+      uses: razzkumar/pr-automation-with-s3@v1.0.0
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -73,7 +73,7 @@ jobs:
     steps:
     - name: Clean up temperory bucket
       if: github.event.pull_request.merged == true
-      uses: razzkumar/pr-automation-with-s3@v0.4.0
+      uses: razzkumar/pr-automation-with-s3@v1.0.0
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
