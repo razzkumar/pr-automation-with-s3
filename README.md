@@ -51,7 +51,7 @@ jobs:
         SRC_FOLDER: 'build'         # optional: defaults to build (react app)
         IS_BUILD: 'true'            # optional: defaults to true
         ACTION: "create"            # optional: defaults to create (option:create,delete and deploy)
-        BUILD_COMMAND: "yarn build" # required if IS_BUILD is true
+        BUILD_COMMAND: "yarn build" # optional: defaults to `yarn build`
 ```
 
 
