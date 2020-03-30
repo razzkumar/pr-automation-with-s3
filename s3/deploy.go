@@ -103,8 +103,12 @@ func build() {
 		fmt.Println("yarn install ....")
 		utils.RunCommand("yarn")
 
-		fmt.Printf("----------- %s -----------", buildCmd)
-
-		utils.RunCommand(buildCmd)
+		if buildCmd == "" {
+			fmt.Println("----------- yarn build ----------")
+			utils.RunCommand("yarn build")
+		} else {
+			fmt.Printf("----------- %s -----------", buildCmd)
+			utils.RunCommand(buildCmd)
+		}
 	}
 }

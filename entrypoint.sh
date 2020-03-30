@@ -24,9 +24,9 @@ case "$ACTION" in
 # Create action will create new s3 static site and  deploy on it
 create)
     if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]];then
-     # check GH_ACCSS_TOKEN is set or not for the commit_
-      if [ -z "$GH_ACCSS_TOKEN" ]; then
-        echo "GH_ACCSS_TOKEN is not set. Quitting."
+     # check GH_ACCESS_TOKEN is set or not for the commit_
+      if [ -z "$GH_ACCESS_TOKEN" ]; then
+        echo "GH_ACCESS_TOKEN is not set. Quitting."
         exit 1
       fi
 
@@ -54,7 +54,7 @@ create)
     fi
   ;;
   deploy)
-     # check GH_ACCSS_TOKEN is set or not for the commit_
+     # check GH_ACCESS_TOKEN is set or not for the commit_
     if [ -z "$AWS_S3_BUCKET" ]; then
       echo "$AWS_S3_BUCKET is not set. Quitting."
       exit 1

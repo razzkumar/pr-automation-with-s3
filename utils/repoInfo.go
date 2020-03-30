@@ -20,7 +20,7 @@ type ProjectInfo struct {
 
 func getDistFolder() string {
 
-	assestFolder := os.Getenv("BUILD_FOLDER")
+	assestFolder := os.Getenv("SRC_FOLDER")
 	//setting build folder default
 	if assestFolder == "" {
 		assestFolder = "build"
