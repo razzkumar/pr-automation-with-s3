@@ -1,0 +1,20 @@
+# - It simply delete the s3 bucket on PR merge
+
+name: Delete S3 bucket after PR merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clean up temperory bucket
+      if: github.event.pull_request.merged == true
+      uses: razzkumar/pr-automation-with-s3@v0.4.0
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'us-east-2'     # optional: defaults to us-east-2 must be save as "deploy-on-pr"
+        ACTION: "delete"            # optional: defaule to create (option: create,delete and deploy)

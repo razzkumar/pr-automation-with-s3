@@ -1,0 +1,29 @@
+# - Create s3 bucket if not exist "<PR-base-branch>.pr<PR-Number>.auto-deploy"
+# - Build the application with the given command if not provided it will use "yarn build"
+# - Comment URL to PR
+# - If we add "cleanup-s3-on-merge.yml" it will delete s3 bucket on PR resolve
+
+name: Deploy site to S3 And add comment to PR
+
+on:
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Static site deploy to s3 and comment on PR
+      uses: razzkumar/pr-automation-with-s3@v0.4.0
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN}}
+        AWS_REGION: 'us-east-2'     # optional: defaults to us-east-2
+        SRC_FOLDER: 'build'       # optional: defaults to build (react app)
+        IS_BUILD: 'true'            # optional: defaults to true
+        ACTION: "create"            # optional: defaule to create (option: create,delet and deploy)
+        BUILD_COMMAND: "yarn build" # required if IS_BUILD is true
+
