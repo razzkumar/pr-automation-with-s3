@@ -1,14 +1,9 @@
-# - Create s3 bucket if not exist "<PR-base-branch>.pr<PR-Number>.auto-deploy"
-# - Build the application with the given command if not provided it will use "yarn build"
-# - Comment URL to PR
-# - If we add "cleanup-s3-on-merge.yml" it will delete s3 bucket on PR resolve
-
 name: Deploy site to S3 And add comment to PR
 
 on:
   pull_request:
     branches:
-    - master
+    - none
 
 jobs:
   deploy:
