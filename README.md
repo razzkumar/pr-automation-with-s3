@@ -1,4 +1,7 @@
-# GitHub Action to Deploy static website to S3 Bucket and comment the Url to PR☁
+
+
+
+## GitHub Action to Deploy static website to S3 Bucket and comment the Url to PR☁
 
 This action uses the golang aws sdk to build aws static website bucket and
 deploy the static file to that newly created s3 bucket and comment the url to
@@ -111,6 +114,12 @@ The following settings must be passed as environment variables as shown in the e
  - If we deploy app on push or (not on pull requst) like prebuild app deployment, app build and deploy then the bucket name will be `$AWS_S3_BUCKET.auto-deploy`
     - For Eg.
       - if `AWS_S3_BUCKET=dev-test-deployment` then bucket will be `dev-test-deployment.auto-deploy`
+
+## TODO
+ - [ ] Add tests
+ - [ ] Add option to deploy on aws cloudfront
+ - [ ] Design PR comment done by tool
+ - [ ] Maintain code quality
 
 ## Contributing
   Feel free to send pull requests
