@@ -1,4 +1,4 @@
-name: "PR Automation with s3"
+name: "Static Site Automation"
 description: "It simple Build the aws S3 bucket, build the applicaton and deploy static site to s3 and comment the url to the PR"
 author: razzkumar
 runs:
