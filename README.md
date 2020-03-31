@@ -9,27 +9,23 @@ action is not feasible.
 
 
 ### Best for?
-   - Immediate feedback visually to dev or anyone interested in changes.
+   - Immediate feedback visually to developers or anyone interested in changes.
    - Reduce burden of having to build application for QA and verify the changes.
    - Faster iterations.
 
 ### How to use?
 
 Place in a `.yml` file such as this one in your `.github/workflows` folder. [Refer to the documentation on workflow YAML syntax here.](https://help.github.com/en/articles/workflow-syntax-for-github-actions)
-##### The following example includes optimal defaults for a any client side javascript static website:
 
-- It build the javascript/typescript frontend application with the help of given
-  command (ex: `BUILD_COMMAND="yarn build"`)
-- If If it't PR then it will comment the URL of the static site to the PR
-- It also delete the Build s3 bucket on PR merge or close
+##### The following will:
+   - Create s3 bucket and attach policy for static site
+   - Build the javascript/typescript frontend application with the help of
+     given command (ex: `BUILD_COMMAND="yarn build"`)
+   - Upload build file (static site) to s3
+   - Comment the URL of the static site to the Pull Request
+   - Delete the aws S3 bucket after PR is merged
 
-
-##### Cofig file: `.github/workflow/depoy-on-pr.yml`
-  - What is does:
-    - Create s3 bucket and attach policy for static site
-    - Build the application
-    - Upload build file (static file) to s3
-    - Comment the URL of the static site to the Pull Request
+##### Config file: `.github/workflow/depoy-on-pr.yml`
 
 ```yaml
 name: Deploy site to S3 And add comment to PR and delete after merge
@@ -59,9 +55,6 @@ jobs:
 
 
 ##### Config file: `.github/workflow/cleanup-on-pr-merge.yml`
-  - It should be inclued with the `deploy-on-pr.yml`
-    - What it does:
-      - Delete the aws S3 bucket after PR is merged
 
 ```yaml
 name: Delete S3 bucket after PR merge
