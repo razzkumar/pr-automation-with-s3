@@ -17,7 +17,7 @@ action is not feasible.
 
 Place in a `.yml` file such as this one in your `.github/workflows` folder. [Refer to the documentation on workflow YAML syntax here.](https://help.github.com/en/articles/workflow-syntax-for-github-actions)
 
-##### The following will:
+##### The following example will:
    - Create s3 bucket and attach policy for static site
    - Build the javascript/typescript frontend application with the help of
      given command (ex: `BUILD_COMMAND="yarn build"`)
