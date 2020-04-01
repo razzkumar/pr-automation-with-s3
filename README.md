@@ -4,7 +4,7 @@
 This Gihub action that uses the [golang aws sdk](https://aws.amazon.com/sdk-for-go/) to build s3 bucket and attach policy
 for static website deploy the static file to that newly created s3 bucket and
 comment the url to the PR. To deploy static file it uses either from your
-repository or build during your workflow. There is [self hosed](https://github.com/razzkumar/frontend-PR-automation) tool, if Github
+repository or build during your workflow. There is [self hosted](https://github.com/razzkumar/frontend-PR-automation) tool, if Github
 action is not feasible.
 
 
@@ -15,7 +15,7 @@ action is not feasible.
 
 ### How to use?
 
-Place in a `.yml` file such as this one in your `.github/workflows` folder. [Refer to the documentation on workflow YAML syntax here.](https://help.github.com/en/articles/workflow-syntax-for-github-actions)
+Add `.yml` file/s such as given examples in your `.github/workflows` folder. [Refer to the documentation on workflow YAML syntax here.](https://help.github.com/en/articles/workflow-syntax-for-github-actions)
 
 ##### The following example will:
    - Create s3 bucket and attach policy for static site
@@ -25,7 +25,7 @@ Place in a `.yml` file such as this one in your `.github/workflows` folder. [Ref
    - Comment the URL of the static site to the Pull Request
    - Delete the aws S3 bucket after PR is merged
 
-##### Config file: `.github/workflow/depoy-on-pr.yml`
+##### Config file: `.github/workflows/deploy-on-pr.yml`
 
 ```yaml
 name: Deploy site to S3 And add comment to PR and delete after merge
@@ -54,7 +54,7 @@ jobs:
 ```
 
 
-##### Config file: `.github/workflow/cleanup-on-pr-merge.yml`
+##### Config file: `.github/workflows/cleanup-on-pr-merge.yml`
 
 ```yaml
 name: Delete S3 bucket after PR merge
