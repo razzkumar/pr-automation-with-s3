@@ -25,6 +25,36 @@ Add `.yml` file/s such as given examples in your `.github/workflows` folder. [Re
    - Comment the URL of the static site to the Pull Request
    - Delete the aws S3 bucket after PR is merged
 
+##### Config file: `.github/workflows/deploy-existing.yml`
+
+```yaml
+name: Next js frontend dev
+
+on:
+  push:
+    branches:
+    - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build and deploy Studio app
+      uses: razzkumar/pr-automation-with-s3@v1.0.2
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }} 
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: "us-east-1"
+        SRC_FOLDER: "out"
+        ACTION: 'deploy'
+        BUILD_COMMAND: "yarn build && yarn export"
+        CLOUDFRONT_ID: ${{ secrets.CLOUDFRONT_ID }}
+        SECRETS_MANAGER: ${{ secrets.SECRETS_MANAGER }} // name of secrets on secret manager
+```
+
+
 ##### Config file: `.github/workflows/deploy-on-pr.yml`
 
 ```yaml
@@ -41,7 +71,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Static site deploy to s3 and comment on PR
-      uses: razzkumar/pr-automation-with-s3@v1.0.0
+      uses: razzkumar/pr-automation-with-s3@v1.0.2
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -69,7 +99,7 @@ jobs:
     steps:
     - name: Clean up temperory bucket
       if: github.event.pull_request.merged == true
-      uses: razzkumar/pr-automation-with-s3@v1.0.0
+      uses: razzkumar/pr-automation-with-s3@v1.0.2
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -86,17 +116,19 @@ jobs:
 
 The following settings must be passed as environment variables as shown in the example. Sensitive information, especially `GH_ACCESS_TOKEN`,`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, should be [set as encrypted secrets](https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables) — otherwise, they'll be public to anyone browsing your repository's source code and CI logs.
 
-| Key                     | Value                                                                                                                                                                                                                       | Suggested Type | Required                                                                  | Default                                                                                                                  |
-| -------------           | -------------                                                                                                                                                                                                               | -------------  | -------------                                                             | -------------                                                                                                            |
-| `GH_ACCESS_TOKEN`       | Your Github access token used while commenting PR                                                                                                                                                                           | `secrect env`  | **YES/NO** If `ACTION: create` then it's required,otherwise it's optional | NA                                                                                                                       |
-| `AWS_ACCESS_KEY_ID`     | Your AWS Access Key. [More info here.](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)                                                                                                         | `secret env`   | **Yes**                                                                   | N/A                                                                                                                      |
-| `AWS_SECRET_ACCESS_KEY` | Your AWS Secret Access Key. [More info here.](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)                                                                                                  | `secret env`   | **Yes**                                                                   | N/A                                                                                                                      |
-| `AWS_S3_BUCKET`         | The name of the bucket you're syncing to. For example, `jarv.is` or `my-app-releases`.                                                                                                                                      | `secret env`   | **YES/NO**                                                                | - If running on PR it will genereat by tool `PR-Branch`.pr`PR-number`.auto-deploy - In the case of depoyment it required |
-| `AWS_REGION`            | The region where you created your bucket. Set to `us-east-2` by default. [Full list of regions here.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions) | `env`          | No                                                                        | `us-east-2`                                                                                                              |
-| `SRC_FOLDER`            | The local directory (or file) you wish to deploy to S3. For example, `public`. Defaults to `build`.                                                                                                                         | `env`          | No                                                                        | `build` (based on react app)                                                                                             |
-| `IS_BUILD`              | This is the flag that indicate that build a project or not                                                                                                                                                                  | `env`          | No                                                                        | `true` (It will run `yarn && yarn build` by default)                                                                     |
-| `ACTION`                | This is also a flag that indicate what to do (`create`:-create s3 (if not exist) bucket,build react and comment on PR,`deploy`:helps to deploy to s3,`delete`: delete the s3 bucket)                                        | `env`          | No                                                                        | `create` (It will create s3 (if not exist),built the app, deploy to s3 and comment URL to PR`)                           |
-| `BUILD_COMMAND`         | How to build the react app if its `npm run build` then it will run `npm install && npm run build`                                                                                                                           | `env`          | No                                                                        | `yarn build` (It will run `yarn && yarn build` by default)                                                               |
+| Key                     | Suggested Type | Value                                                                                                                                                                                                                       | Required                                                                  | Default                                                                                                                  |
+| -------------           | -------------  | -------------                                                                                                                                                                                                               | -------------                                                             | -------------                                                                                                            |
+| `GH_ACCESS_TOKEN`       | `secrect env`  | Your Github access token used while commenting PR                                                                                                                                                                           | **YES/NO** If `ACTION: create` then it's required,otherwise it's optional | NA                                                                                                                       |
+| `AWS_ACCESS_KEY_ID`     | `secret env`   | Your AWS Access Key. [More info here.](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)                                                                                                         | **Yes**                                                                   | N/A                                                                                                                      |
+| `AWS_SECRET_ACCESS_KEY` | `secret env`   | Your AWS Secret Access Key. [More info here.](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)                                                                                                  | **Yes**                                                                   | N/A                                                                                                                      |
+| `AWS_S3_BUCKET`         | `secret env`   | The name of the bucket you're syncing to. For example, `jarv.is` or `my-app-releases`.                                                                                                                                      | **YES/NO**                                                                | - If running on PR it will genereat by tool `PR-Branch`.pr`PR-number`.auto-deploy - In the case of depoyment it required |
+| `AWS_REGION`            | `env`          | The region where you created your bucket. Set to `us-east-2` by default. [Full list of regions here.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions) | No                                                                        | `us-east-2`                                                                                                              |
+| `SRC_FOLDER`            | `env`          | The local directory (or file) you wish to deploy to S3. For example, `public`. Defaults to `build`.                                                                                                                         | No                                                                        | `build` (based on react app)                                                                                             |
+| `IS_BUILD`              | `env`          | This is the flag that indicate that build a project or not                                                                                                                                                                  | No                                                                        | `true` (It will run `yarn && yarn build` by default)                                                                     |
+| `ACTION`                | `env`          | This is also a flag that indicate what to do (`create`:-create s3 (if not exist) bucket,build react and comment on PR,`deploy`:helps to deploy to s3,`delete`: delete the s3 bucket)                                        | No                                                                        | `create` (It will create s3 (if not exist),built the app, deploy to s3 and comment URL to PR`)                           |
+| `BUILD_COMMAND`         | `env`          | How to build the react app if its `npm run build` then it will run `npm install && npm run build`                                                                                                                           | No                                                                        | `yarn build` (It will run `yarn && yarn build` by default)                                                               |
+| `CLOUDFRONT_ID`         | `secret env`   | id of cloudfront for invalidation                                                                                                                                                                                           | No                                                                        |                                                                                                                          |
+| `SECRETS_MANAGER`       | `env`          | name of the aws secres manager key                                                                                                                                                                                          | No                                                                        |                                                                                                                          |
 
 
 #### Note for S3 Bucket creation
