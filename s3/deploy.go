@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/razzkumar/PR-Automation/logger"
+	"github.com/razzkumar/PR-Automation/secret_manager"
 	"github.com/razzkumar/PR-Automation/utils"
 )
 
@@ -30,6 +31,8 @@ func Deploy(repo utils.ProjectInfo, sess *session.Session) error {
 
 	if repo.IsBuild {
 
+		secret_manager.SetEnv(sess)
+		fmt.Println("THIS is env", os.Getenv("NEXT_PUBLIC_BASE_URL"))
 		//Running build
 		build()
 
