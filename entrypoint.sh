@@ -54,7 +54,6 @@ create)
     fi
   ;;
   deploy)
-     # check GH_ACCESS_TOKEN is set or not for the commit_
     if [ -z "$AWS_S3_BUCKET" ]; then
       echo "$AWS_S3_BUCKET is not set. Quitting."
       exit 1

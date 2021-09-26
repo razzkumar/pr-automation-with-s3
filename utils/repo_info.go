@@ -9,13 +9,14 @@ import (
 )
 
 type ProjectInfo struct {
-	PrNumber   int
-	RepoOwner  string
-	Branch     string
-	RepoName   string
-	DistFolder string
-	Bucket     string
-	IsBuild    bool
+	PrNumber     int
+	RepoOwner    string
+	Branch       string
+	RepoName     string
+	DistFolder   string
+	Bucket       string
+	IsBuild      bool
+	CloudfrontId string // cloud front distribution id
 }
 
 func getDistFolder() string {
@@ -65,7 +66,7 @@ func GetInfo(repo ProjectInfo, action string) ProjectInfo {
 	if action == "deploy" && bucket == "" {
 		logger.FailOnNoFlag("AWS_S3_BUCKET is not set:")
 	}
-	repo.Bucket = strings.ToLower(bucket + ".auto-deploy")
+	repo.Bucket = bucket
 
 	// setting dist folder
 	repo.DistFolder = getDistFolder()
@@ -75,6 +76,8 @@ func GetInfo(repo ProjectInfo, action string) ProjectInfo {
 	if isBuild == "" || isBuild == "true" {
 		repo.IsBuild = true
 	}
+
+	repo.CloudfrontId = os.Getenv("CLOUDFRONT_ID")
 
 	return repo
 }

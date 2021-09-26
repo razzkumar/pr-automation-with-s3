@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/razzkumar/PR-Automation/aws-client"
+	"github.com/razzkumar/PR-Automation/cloudfront"
 	"github.com/razzkumar/PR-Automation/logger"
 	"github.com/razzkumar/PR-Automation/s3"
 	"github.com/razzkumar/PR-Automation/utils"
@@ -23,8 +25,9 @@ func main() {
 	}
 
 	var action string
-	var repo utils.ProjectInfo
 	// Getting action wether delete or create
+	var repo utils.ProjectInfo
+
 	flag.StringVar(&action, "action", "", "It's create or delete s3 bucket")
 	flag.Parse()
 
@@ -39,11 +42,15 @@ func main() {
 	}
 
 	// Getting session of aws
-	sess := s3.GetSession()
+	sess := awsclient.GetSession()
 
 	switch action {
 	case "deploy":
 		err := s3.Deploy(repo, sess)
+
+		invErr := cloudfront.Invalidation(repo.CloudfrontId, sess)
+		logger.FailOnError(invErr, "Fail to invalitate")
+
 		logger.FailOnError(err, "Error on Deployment")
 	case "create":
 		err := s3.DeployAndComment(repo, sess)

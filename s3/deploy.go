@@ -77,6 +77,10 @@ func Deploy(repo utils.ProjectInfo, sess *session.Session) error {
 
 	fmt.Println("\n\n" + strconv.Itoa(len(fileList)) + " Files Uploaded Successfully. 🎉 🎉 🎉")
 
+	// cloudfrontDistributionID := os.Getenv("CLOUDFRONT_ID")
+
+	// if cloudfrontDistributionID==""
+
 	url := utils.GetURL(repo.Bucket)
 	fmt.Println("URL : ", url)
 
