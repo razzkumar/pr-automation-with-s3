@@ -14,7 +14,7 @@ import (
 
 func SetEnv(sess *session.Session) error {
 
-	secretName := os.Getenv("SECRETSMANAGER")
+	secretName := os.Getenv("SECRETS_MANAGER")
 	if secretName == "" {
 		return nil
 	}

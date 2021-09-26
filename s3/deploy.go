@@ -32,7 +32,7 @@ func Deploy(repo utils.ProjectInfo, sess *session.Session) error {
 	if repo.IsBuild {
 
 		secret_manager.SetEnv(sess)
-		fmt.Println("THIS is env", os.Getenv("NEXT_PUBLIC_BASE_URL"))
+
 		//Running build
 		build()
 
