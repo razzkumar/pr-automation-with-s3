@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Build and deploy Studio app
+    - name: Build and deploy next app
       uses: razzkumar/pr-automation-with-s3@v1.0.2
       env:
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }} 
